@@ -47,8 +47,7 @@ let state = 'q0';
 let simulating = true
 let current_char = 0;
  while (simulating) {
-    
-    console.log(current_char)
+
     trans_func = instructions[state][stripe[current_char]]
     state = trans_func[0]
     setCharAt(current_char,trans_func[1]);
