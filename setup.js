@@ -1,26 +1,10 @@
 let tileSize=60;
 let borderSize=2;
-
 let mainBorderSize=20;
 let borderColor="#000000";
-let has1PixBorder=true;
 let canvas = document.getElementById("Turing_Canvas");
 let ctx = canvas.getContext("2d");
-
-
-
-
-function keypressHandler(evt){
-  evt.preventDefault();
-  if (evt.keyCode == 37)
-  {
-    motion(1)
-  }
-  if (evt.keyCode == 39)
-  {
-    motion(2)
-  }
-}
+let timer = null;
 //===============================================================
 //==============================================================
 //===============================================================
@@ -58,18 +42,19 @@ function drawStripe(x, char){
   ctx.fillText(char, squareX(x)+mainBorderSize, canvas.height/2+mainBorderSize/2);
 }
 
-
-let stripee = '011110101010'
-let j;
 drawBorder()
 function drawSquares(){
   for (let i=1; i<18; i++){
     drawSquare(i)
   }
 }
+
+//////========================////////===============//////=================/////===========================//////////=
+
+
 function drawStripes(index, stripe){
   
-  //j0obboldal
+  //olvasofejtol eso jobboldal kirajzolasa
   if (index>=0){
     for (let i=9; i<18; i++){
       drawSquare(i);
@@ -79,7 +64,7 @@ function drawStripes(index, stripe){
     }
   }
   
-  //baloldal
+  //olfasofejtol balra
   if (index <= stripe.length){
     for (let i=8; i>0; i--){
       drawSquare(i);
@@ -89,26 +74,16 @@ function drawStripes(index, stripe){
     }
   }
 }
+////======olvasofej======/////
+var path=new Path2D();
+path.moveTo((canvas.width/2)+50,canvas.height/2+50);
+path.lineTo((canvas.width/2),(canvas.height/2));
+path.lineTo((canvas.width/2)-50,canvas.height/2+50);
 
-let index = 0;
-drawSquares(stripee)
-drawStripes(index,stripee)
-function motion(direction){
-    
-    if (direction == 1){
-      index++;
-    }
-  
-    if (direction == 2){
-      index--;
-    }
-    
-    drawStripes(index,stripee)
-  
-}
-
-document.onkeydown = function(evt){keypressHandler(evt)};
-
+path.moveTo((canvas.width/2)-50,canvas.height/2-50);
+path.lineTo((canvas.width/2),(canvas.height/2));
+path.lineTo((canvas.width/2)+50,canvas.height/2-50);
+ctx.fill(path);
 
 
 

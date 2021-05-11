@@ -1,4 +1,4 @@
-let stripe = '110000001 ';
+let tape = '00010111110 ';
 
 /* q0,0
 q1,0,>
@@ -14,13 +14,48 @@ q1,1,>
 
 q0,_
 qAccept,_,- */
+function keypressHandler(evt){
+    evt.preventDefault();
+    if (evt.keyCode == 37)
+    {
+      motion('<',tape)
+    }
+    if (evt.keyCode == 39)
+    {
+      motion('>',tape)
+    }
+    if (evt.keyCode == 32 && current_char<tape.length-1){
+        timer=setInterval(function ()
+        {
+        iterate();
+        }, 500);
+    }
+    if (evt.keyCode == 82){
+        reset()
+    }
+  }
 
+
+function motion(direction,stripe){
+    
+    if (direction == '<' && current_char<stripe.length-1){
+        current_char++;
+    }
+  
+    if (direction == '>' && current_char>0){
+        current_char--;
+    }
+    
+    drawStripes(current_char,stripe)
+}
+
+document.onkeydown = function(evt){keypressHandler(evt)};
 
 
 function setCharAt(index,chr) {
     
-    if(index > stripe.length-1) return stripe;
-    stripe = stripe.substring(0,index) + chr + stripe.substring(index+1);
+    if(index > tape.length-1) return tape;
+    tape = tape.substring(0,index) + chr + tape.substring(index+1);
 }
 
 let instructions = {
@@ -41,78 +76,58 @@ let instructions = {
         ,
         '1':
             ['q1' , '1' , '>']
+        ,
+        
     }
 }
+let index = 0;
+drawSquares(tape)
+drawStripes(index,tape)
 let state = 'q0';
-let simulating = true
 let current_char = 0;
- while (simulating) {
 
-    trans_func = instructions[state][stripe[current_char]]
+function reset(){
+    current_char = 0;
+    drawSquares(tape)
+    drawStripes(index,tape)
+    state = 'q0';
+    
+}
+
+//while(state !='qi' && state != 'qReject')
+
+function iterate() {
+    
+    trans_func = instructions[state][tape[current_char]]
     state = trans_func[0]
     setCharAt(current_char,trans_func[1]);
-    if (trans_func[2] == '>'){
-        current_char = current_char + 1
-
+        if (trans_func[2] == '>'){
+        motion('<',tape)
+        //current_char = current_char + 1
     }
     if (trans_func[2] == '<'){
-        current_char = current_char - 1
-           
+        motion('>',tape)
+        //current_char = current_char - 1
     }
-    next_trans_func = instructions[state][stripe[current_char]]
+    console.log(tape.length)
+    next_trans_func = instructions[state][tape[current_char]]
 
-    if (stripe[current_char] == ' '){
-        
-        
+    if (tape[current_char] == ' '){
         if (next_trans_func != undefined){
             state = next_trans_func[0]
-            simulating = false
+            clearInterval(timer)
         }
-        
+        if (next_trans_func == undefined){
+            //a simulating booleant at kell irni majd arra, hogy a state legyen bool
+            //ha nincs állapotunk a szalag végére érve, akkor az nem elfogadó állapotot jelent tehát:
+            state = 'qReject'
+            clearInterval(timer)
+        }
+        if (state == 'qi'){
+            console.log('ACCEPTED')
+        }
+        else{
+            console.log('DENIED')
+        }
     }
 }  
-
-if (state == 'qi'){
-    console.log('ACCEPTED')
-}
-else{
-    console.log('DENIED')
-}
-
-
-/* for (let i = 0; i<stripe.length; ++i){
-    console.log(i)
-    if ( state == 'q0' && stripe[i] == 0 && i != stripe.length)
-    {
-        state = 'q1'
-        setCharAt(i,'0');
-        console.log('haho0')
-
-    }
-    if ( state == 'q1' && stripe[i] == '0' )
-    {
-        state = 'q0'
-        setCharAt(i,'0');
-        console.log('haho1')
-    }
-    if ( state == 'q0' && stripe[i] == '1' && i != stripe.length)
-    {
-        state = 'q0'
-        setCharAt(i,'1');
-        console.log('haho2')
-    }
-    if ( state == 'q1' && stripe[i] == '1' )
-    {
-
-        state = 'q1'
-        setCharAt(i,'1');
-        console.log('haho3')
-    }   
-        
-    if ( state == 'q0'  && i == stripe.length-1 )
-    {
-        state = 'qi'
-        console.log('haho4')
-    }
-
-} */
