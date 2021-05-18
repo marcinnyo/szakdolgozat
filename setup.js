@@ -1,3 +1,5 @@
+
+
 let tileSize=60;
 let borderSize=2;
 let mainBorderSize=20;
@@ -10,6 +12,26 @@ let timer = null;
 //===============================================================
 canvas.width = 1280
 canvas.height = 300;
+
+function drawCanvas(){
+  ctx.clearRect ( 0 , 0 , canvas.width , canvas.height );
+  drawBorder()
+  function drawSquares(){
+    for (let i=1; i<18; i++){
+      drawSquare(i)
+    }
+  }
+  var path=new Path2D();
+  path.moveTo((canvas.width/2)+50,canvas.height/2+50);
+  path.lineTo((canvas.width/2),(canvas.height/2));
+  path.lineTo((canvas.width/2)-50,canvas.height/2+50);
+
+  path.moveTo((canvas.width/2)-50,canvas.height/2-50);
+  path.lineTo((canvas.width/2),(canvas.height/2));
+  path.lineTo((canvas.width/2)+50,canvas.height/2-50);
+  ctx.fill(path);
+}
+
 function drawBorder()
 {
   ctx.fillStyle = borderColor;
@@ -39,10 +61,15 @@ function drawStripe(x, char){
   
   ctx.fillStyle = "#FFFFFF";
   ctx.font = "30px Arial";
-  ctx.fillText(char, squareX(x)+mainBorderSize, canvas.height/2+mainBorderSize/2);
+  if (char == "_"){
+    ctx.fillText("_", squareX(x)+mainBorderSize, canvas.height/2+mainBorderSize/2);
+  }else{
+    ctx.fillText(char, squareX(x)+mainBorderSize, canvas.height/2+mainBorderSize/2);
+  }
+  
 }
 
-drawBorder()
+
 function drawSquares(){
   for (let i=1; i<18; i++){
     drawSquare(i)
@@ -74,16 +101,32 @@ function drawStripes(index, stripe){
     }
   }
 }
-////======olvasofej======/////
-var path=new Path2D();
-path.moveTo((canvas.width/2)+50,canvas.height/2+50);
-path.lineTo((canvas.width/2),(canvas.height/2));
-path.lineTo((canvas.width/2)-50,canvas.height/2+50);
-
-path.moveTo((canvas.width/2)-50,canvas.height/2-50);
-path.lineTo((canvas.width/2),(canvas.height/2));
-path.lineTo((canvas.width/2)+50,canvas.height/2-50);
-ctx.fill(path);
 
 
+function Accepted(){
+
+  ctx.font = "30px Verdana";
+  ctx.fillStyle = "green"
+  ctx.fillText("Accepted", canvas.width-200, canvas.height/2-50);
+
+}
+
+
+function Denied(){
+  ctx.font = "30px Verdana";
+  ctx.fillStyle = "red"
+  ctx.fillText("Denied", canvas.width-200, canvas.height/2-50);
+}
+
+
+
+function drawState(state){
+
+  ctx.font = "30px Verdana";
+  ctx.fillStyle = borderColor
+  ctx.fillText("Current state: " + state, 50, canvas.height/2-50)
+
+}
+
+drawCanvas()
 

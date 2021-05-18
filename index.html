@@ -7,21 +7,295 @@
     <title>Szimulátor</title>
 </head>
 <style>
-    #container {
+    .container {
         width: 100%;
-      
         text-align:center;
         margin: auto;
+        
     }
     canvas {
         display: inline;
     }
+    textarea{
+        margin-top: 10px;
+        background: url(http://i.imgur.com/2cOaJ.png);
+        background-attachment: local;
+        background-repeat: no-repeat;
+        padding-left: 35px;
+        border-color:#ccc;
+        resize: none;
+        margin-left: 5em;
+    }
+    input.szabalyok{
+        margin-left: 6em; 
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        background-color: #184ee0; 
+        color: white; 
+        width: 36em;
+    }
+    input.szabalyok:hover {
+        background-color: #4CAF50;
+        color: white;
+    }
+    input.szalag{ 
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        background-color: #184ee0; 
+        color: white; 
+        width: 18em;
+    }
+    input.szalag:hover {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .szalaginput{
+        width: 21em;
+        height: 3em;
+    }
+    .buttons{
+        margin-right:5em;
+    }
+    .button-outer {
+        margin:  auto;
+        width: 5em;
+        height: 5em;
+        background-color: rgba(0, 0, 0, .25);
+        float: right;
+        cursor: pointer;
+        pointer-events:none;
+    }
+    .active{
+        background-color: rgba(0, 0, 0, .5);
+    }
+
+    .play-button {
+        margin: 0 auto;
+        top: 25%;
+        position: relative;  
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 1.25em 0 1.25em 2.5em;
+        border-color: transparent transparent transparent #000;
+        opacity: .75; 
+    }
+
+    .button-outer:hover {
+    background-color: rgba(0, 0, 0, .5);
+    }
+
+    .button-outer:hover .play-button .pause-button{
+    opacity: 1;
+    }
+    
+    .stop-button {
+        margin: 0 auto;
+        top: 25%;
+        position: relative;  
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 1.25em 1.25em 1.25em 1.25em;
+        border-color: transparent transparent transparent transparent #000;
+        opacity: .75; 
+    }
+    .pause-button {
+        opacity: 0.75;
+        width: 0.5em;
+        height: 2.5em;
+        border-right: calc(0.6em - 2px) solid rgba(0, 0, 0, 1);
+        border-left: calc(0.6em - 2px) solid rgba(0, 0, 0, 1);
+        margin-left:1.75em;
+        margin-top: 1.25em;
+        border-top: 0;
+        border-bottom: 0;
+        background-color: transparent;
+    }
+    .szabalyok{
+     display: block;
+    }
+    #form{
+        margin-right: 6em;
+        float: right;
+    }
+    #szalagbutton{
+        pointer-events:none;
+    }
+    .alert {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        margin-bottom: 1em;
+        display: none;
+        text-align: center;
+    }
+
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        
+    }
+
+    .closebtn:hover {
+        color: black;
+    }
+
 </style>
 <body >
-    <div id="container" >
+    <div class="container" >
 		<canvas id="Turing_Canvas" ></canvas>
 	</div>
+    <div class="alert" id="error" >
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <strong>Hiba</strong> az adatbevitel formátumában!
+    </div>
+      
+    <div class="buttons">
+        <div class="button-outer " onclick="reset()">
+            <div class="stop-button" ></div>
+        </div>
+        <div class="button-outer" onclick="start()">
+            <div class="play-button" ></div>
+        </div>
+        <div class="button-outer" onclick="pause()">
+            <div class="pause-button" ></div>
+        </div>
+        <div id="form">
+            <input  class="szalaginput" type="text" id="szalaginput" autocomplete="off"><br><br>
+            <input  class="szalag" id="szalagbutton" onclick="fillup()" type="submit" value="Szalag feltöltése">
+        </div>
+        
+    </div>
+    
+    <div>  
+        <textarea class="szabalyok" rows="20" cols="80" id="text">
+            // Input: a binary number n
+// Ouput: accepts if n is a palindrome
+// Example: accepts 10101
+//
+// Palindrome Algorithm
+// for Turing Machine Simulator 
+// turingmachinesimulator.com
 
+name: Binary palindrome
+initial: q0
+accept: qAccept
+
+q0,0
+qRight0,_,>
+
+qRight0,0
+qRight0,0,>
+
+qRight0,1
+qRight0,1,>
+
+q0,1
+qRight1,_,>
+
+qRight1,0
+qRight1,0,>
+
+qRight1,1
+qRight1,1,>
+
+qRight0,_
+qSearch0L,_,<
+
+qSearch0L,0
+q1,_,<
+
+qRight1,_
+qSearch1L,_,<
+
+qSearch1L,1
+q1,_,<
+
+q1,0
+qLeft0,_,<
+
+qLeft0,0
+qLeft0,0,<
+
+qLeft0,1
+qLeft0,1,<
+
+q1,1
+qLeft1,_,<
+
+qLeft1,0
+qLeft1,0,<
+
+qLeft1,1
+qLeft1,1,<
+
+qLeft0,_
+qSearch0R,_,>
+
+qSearch0R,0
+q0,_,>
+
+qLeft1,_
+qSearch1R,_,>
+
+qSearch1R,1
+q0,_,>
+
+qSearch0R,1
+qReject,1,-
+
+qSearch1R,0
+qReject,0,-
+
+qSearch0L,1
+qReject,1,-
+
+qSearch1L,0
+qReject,0,-
+
+q0,_
+qAccept,_,-
+
+q1,_
+qAccept,_,-
+
+qSearch0L,_
+qAccept,_,-
+
+qSearch0R,_
+qAccept,_,-
+
+qSearch1L,_
+qAccept,_,-
+
+qSearch1R,_
+qAccept,_,-
+            
+        </textarea><br>
+        <input class="szabalyok" type="submit" value="Átmenet függvények feldolgozása" onclick="compile()">
+    </div>
+    
+    
+    
     <script language="javascript" type="text/javascript" src="setup.js"></script>
     <script language="javascript" type="text/javascript" src="turing_engine.js"></script>
 </body>
